@@ -14,6 +14,7 @@ from urllib3.util.retry import Retry
 ENSEMBL_SERVER = "http://www.ensembl.org/biomart"
 PLANTS_SERVER = "http://plants.ensembl.org/biomart"
 
+
 # Configure retry strategy
 retry_strategy = Retry(
     total=3,  # number of retries
