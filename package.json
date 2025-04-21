@@ -2,7 +2,7 @@
     "name": "gene-annotations-assets",
     "scripts": {
       "cleanup": "pnpm -r cleanup",
-      "build": "turbo run build --log-order=stream",
+      "build": "turbo run build --log-order=stream --env-mode=loose",
       "prebuild": "pip install -r scripts/requirements.txt",
       "test": "turbo run test",
       "changeset": "changeset",

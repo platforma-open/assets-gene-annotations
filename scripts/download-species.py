@@ -9,17 +9,19 @@ import time
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from urllib3.exceptions import MaxRetryError, ConnectionError
 
 # Main Ensembl server and Ensembl Plants server
 ENSEMBL_SERVER = "http://www.ensembl.org/biomart"
 PLANTS_SERVER = "http://plants.ensembl.org/biomart"
 
-
-# Configure retry strategy
+# Configure retry strategy with more aggressive settings
 retry_strategy = Retry(
-    total=3,  # number of retries
-    backoff_factor=1,  # wait 1, 2, 4 seconds between retries
-    status_forcelist=[500, 502, 503, 504]  # HTTP status codes to retry on
+    total=5,  # increased number of retries
+    backoff_factor=2,  # increased backoff factor
+    status_forcelist=[500, 502, 503, 504, 408, 429],  # added more status codes
+    allowed_methods=["GET", "POST"],  # explicitly allow methods
+    respect_retry_after_header=True  # respect server's retry-after header
 )
 adapter = HTTPAdapter(max_retries=retry_strategy)
 session = requests.Session()
@@ -87,8 +89,8 @@ def download_species_annotations(species_name):
         server = BiomartServer(server_url, session=session)
         
         # Add retry logic for dataset retrieval
-        max_retries = 3
-        retry_delay = 5  # seconds
+        max_retries = 5
+        retry_delay = 10  # increased initial delay
         
         for attempt in range(max_retries):
             try:
@@ -96,13 +98,21 @@ def download_species_annotations(species_name):
                 if not dataset:
                     raise ValueError(f"Dataset for {species_name} not found on {server_url}")
                 break
+            except (MaxRetryError, ConnectionError) as e:
+                if attempt == max_retries - 1:
+                    print(f"❌ Failed to connect to {server_url} after {max_retries} attempts")
+                    raise
+                print(f"⚠️ Connection attempt {attempt + 1} failed: {str(e)}")
+                print(f"🔄 Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
             except Exception as e:
                 if attempt == max_retries - 1:
                     raise
                 print(f"⚠️ Attempt {attempt + 1} failed: {str(e)}")
                 print(f"🔄 Retrying in {retry_delay} seconds...")
                 time.sleep(retry_delay)
-                retry_delay *= 2  # Exponential backoff
+                retry_delay *= 2
 
         # Try full attribute list
         response = dataset.search({'attributes': base_attributes})
