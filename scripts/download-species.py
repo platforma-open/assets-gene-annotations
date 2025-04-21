@@ -61,7 +61,9 @@ output_columns = [
 
 def get_capitalized_dir(species_name):
     """Convert species name to capitalized directory name."""
-    return species_name.replace("-", "_").title().replace(" ", "_")
+    # Split by hyphen, capitalize first word, keep others lowercase, join with underscore
+    words = species_name.split("-")
+    return "_".join([words[0].capitalize()] + [word.lower() for word in words[1:]])
 
 def download_species_annotations(species_name):
     """Download gene annotations for a specific species."""
