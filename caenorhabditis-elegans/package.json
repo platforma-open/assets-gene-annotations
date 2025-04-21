@@ -1,0 +1,28 @@
+{
+  "name": "@platforma-open/milaboratories.gene-annotations.caenorhabditis-elegans",
+  "version": "1.0.0",
+  "description": "Gene annotations for Caenorhabditis Elegans",
+  "scripts": {
+    "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
+    "build": "../scripts/download-species.sh caenorhabditis-elegans",
+    "postbuild": "pl-pkg build && ([ -z \"${CI}\" ] || pl-pkg publish)"
+  },
+  "block-software": {
+    "entrypoints": {
+      "main": {
+        "asset": {
+          "type": "asset",
+          "registry": "platforma-open",
+          "root": "./data/Caenorhabditis_elegans"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@platforma-sdk/package-builder": "catalog:"
+  }
+} 

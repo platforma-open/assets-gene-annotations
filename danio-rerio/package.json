@@ -1,0 +1,28 @@
+{
+  "name": "@platforma-open/milaboratories.gene-annotations.danio-rerio",
+  "version": "1.0.0",
+  "description": "Gene annotations for Danio Rerio",
+  "scripts": {
+    "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
+    "build": "../scripts/download-species.sh danio-rerio",
+    "postbuild": "pl-pkg build && ([ -z \"${CI}\" ] || pl-pkg publish)"
+  },
+  "block-software": {
+    "entrypoints": {
+      "main": {
+        "asset": {
+          "type": "asset",
+          "registry": "platforma-open",
+          "root": "./data/Danio_rerio"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@platforma-sdk/package-builder": "catalog:"
+  }
+} 

@@ -1,0 +1,28 @@
+{
+  "name": "@platforma-open/milaboratories.gene-annotations.homo-sapiens",
+  "version": "1.0.0",
+  "description": "Gene annotations for Homo Sapiens",
+  "scripts": {
+    "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
+    "build": "../scripts/download-species.sh homo-sapiens",
+    "postbuild": "pl-pkg build && ([ -z \"${CI}\" ] || pl-pkg publish)"
+  },
+  "block-software": {
+    "entrypoints": {
+      "main": {
+        "asset": {
+          "type": "asset",
+          "registry": "platforma-open",
+          "root": "./data/Homo_sapiens"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@platforma-sdk/package-builder": "catalog:"
+  }
+} 

@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+
+from biomart import BiomartServer
+import pandas as pd
+import os
+import sys
+import argparse
+
+# Main Ensembl server and Ensembl Plants server
+ENSEMBL_SERVER = "http://www.ensembl.org/biomart"
+PLANTS_SERVER = "http://plants.ensembl.org/biomart"
+
+# Species to dataset mapping
+species_to_dataset = {
+    "homo-sapiens": ("hsapiens_gene_ensembl", ENSEMBL_SERVER),
+    "mus-musculus": ("mmusculus_gene_ensembl", ENSEMBL_SERVER),
+    "rattus-norvegicus": ("rnorvegicus_gene_ensembl", ENSEMBL_SERVER),
+    "danio-rerio": ("drerio_gene_ensembl", ENSEMBL_SERVER),
+    "drosophila-melanogaster": ("dmelanogaster_gene_ensembl", ENSEMBL_SERVER),
+    "arabidopsis-thaliana": ("athaliana_eg_gene", PLANTS_SERVER),
+    "saccharomyces-cerevisiae": ("scerevisiae_gene_ensembl", ENSEMBL_SERVER),
+    "caenorhabditis-elegans": ("celegans_gene_ensembl", ENSEMBL_SERVER),
+    "gallus-gallus": ("ggallus_gene_ensembl", ENSEMBL_SERVER),
+    "bos-taurus": ("btaurus_gene_ensembl", ENSEMBL_SERVER),
+    "sus-scrofa": ("sscrofa_gene_ensembl", ENSEMBL_SERVER)
+}
+
+base_attributes = [
+    'ensembl_gene_id',
+    'external_gene_name',
+    'description',
+    'gene_biotype',
+    'chromosome_name',
+    'start_position',
+    'end_position',
+    'strand',
+    'entrezgene_id',
+    'uniprot_gn_id'  # May not exist for all
+]
+
+output_columns = [
+    "Ensembl Id", "Gene symbol", "Description", "Gene biotype",
+    "Chromosome", "Start", "End", "Strand", "Entrez ID", "UniProt ID"
+]
+
+def get_capitalized_dir(species_name):
+    """Convert species name to capitalized directory name."""
+    return species_name.replace("-", "_").title().replace(" ", "_")
+
+def download_species_annotations(species_name):
+    """Download gene annotations for a specific species."""
+    if species_name not in species_to_dataset:
+        print(f"❌ Error: Unknown species '{species_name}'")
+        print(f"Available species: {', '.join(species_to_dataset.keys())}")
+        sys.exit(1)
+
+    dataset_name, server_url = species_to_dataset[species_name]
+    safe_name = species_name.replace("-", "_")
+    capitalized_dir = get_capitalized_dir(species_name)
+    
+    print(f"🔍 Fetching annotations for {species_name}...")
+
+    try:
+        # Create data directory if it doesn't exist
+        data_dir = os.path.join("data", capitalized_dir)
+        os.makedirs(data_dir, exist_ok=True)
+        
+        server = BiomartServer(server_url)
+        dataset = server.datasets.get(dataset_name)
+        if not dataset:
+            print(f"⚠️ Dataset for {species_name} not found on {server_url}")
+            sys.exit(1)
+
+        # Try full attribute list
+        response = dataset.search({'attributes': base_attributes})
+        lines = response.raw.data.decode('utf-8').strip().split("\n")
+        data = [line.split("\t") for line in lines]
+
+        if len(data) == 0 or len(data[0]) != len(base_attributes):
+            raise ValueError("Attribute mismatch – likely due to unsupported attribute")
+
+        df = pd.DataFrame(data, columns=output_columns)
+        output_file = os.path.join(data_dir, f"{safe_name}_gene_annotations.csv")
+        df.to_csv(output_file, index=False)
+        print(f"✅ Saved annotations to {output_file} ({len(df)} genes)")
+
+    except Exception as e:
+        print(f"❌ Error for {species_name}: {e}")
+        print(f"🔁 Retrying without 'uniprot_gn_id'...")
+
+        try:
+            reduced_attrs = [attr for attr in base_attributes if attr != 'uniprot_gn_id']
+            reduced_cols = [col for col in output_columns if col != "UniProt ID"]
+            response = dataset.search({'attributes': reduced_attrs})
+            lines = response.raw.data.decode('utf-8').strip().split("\n")
+            data = [line.split("\t") for line in lines]
+
+            df = pd.DataFrame(data, columns=reduced_cols)
+            output_file = os.path.join(data_dir, f"{safe_name}_gene_annotations.csv")
+            df.to_csv(output_file, index=False)
+            print(f"✅ Saved annotations (no UniProt) to {output_file} ({len(df)} genes)")
+
+        except Exception as e2:
+            print(f"❌ Failed again for {species_name}: {e2}")
+            sys.exit(1)
+
+def main():
+    parser = argparse.ArgumentParser(description='Download gene annotations for a specific species')
+    parser.add_argument('species', help='Species name (e.g., homo-sapiens, mus-musculus)')
+    args = parser.parse_args()
+    
+    download_species_annotations(args.species)
+
+if __name__ == "__main__":
+    main()

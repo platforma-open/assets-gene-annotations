@@ -1,0 +1,28 @@
+{
+  "name": "@platforma-open/milaboratories.gene-annotations.rattus-norvegicus",
+  "version": "1.0.0",
+  "description": "Gene annotations for Rattus Norvegicus",
+  "scripts": {
+    "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
+    "build": "../scripts/download-species.sh rattus-norvegicus",
+    "postbuild": "pl-pkg build && ([ -z \"${CI}\" ] || pl-pkg publish)"
+  },
+  "block-software": {
+    "entrypoints": {
+      "main": {
+        "asset": {
+          "type": "asset",
+          "registry": "platforma-open",
+          "root": "./data/Rattus_norvegicus"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@platforma-sdk/package-builder": "catalog:"
+  }
+} 

@@ -1,0 +1,18 @@
+packages:
+  - arabidopsis-thaliana
+  - bos-taurus
+  - caenorhabditis-elegans
+  - danio-rerio
+  - drosophila-melanogaster
+  - gallus-gallus
+  - homo-sapiens
+  - mus-musculus
+  - rattus-norvegicus
+  - saccharomyces-cerevisiae
+  - sus-scrofa
+  - catalogue
+
+catalog:
+  'turbo': ^2.4.4
+  '@changesets/cli': ^2.28.1
+  '@platforma-sdk/package-builder': ^2.15.4

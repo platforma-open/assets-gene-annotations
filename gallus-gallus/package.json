@@ -1,0 +1,28 @@
+{
+  "name": "@platforma-open/milaboratories.gene-annotations.gallus-gallus",
+  "version": "1.0.0",
+  "description": "Gene annotations for Gallus Gallus",
+  "scripts": {
+    "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
+    "build": "../scripts/download-species.sh gallus-gallus",
+    "postbuild": "pl-pkg build && ([ -z \"${CI}\" ] || pl-pkg publish)"
+  },
+  "block-software": {
+    "entrypoints": {
+      "main": {
+        "asset": {
+          "type": "asset",
+          "registry": "platforma-open",
+          "root": "./data/Gallus_gallus"
+        }
+      }
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@platforma-sdk/package-builder": "catalog:"
+  }
+} 
