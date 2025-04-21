@@ -5,10 +5,25 @@ import pandas as pd
 import os
 import sys
 import argparse
+import time
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # Main Ensembl server and Ensembl Plants server
 ENSEMBL_SERVER = "http://www.ensembl.org/biomart"
 PLANTS_SERVER = "http://plants.ensembl.org/biomart"
+
+# Configure retry strategy
+retry_strategy = Retry(
+    total=3,  # number of retries
+    backoff_factor=1,  # wait 1, 2, 4 seconds between retries
+    status_forcelist=[500, 502, 503, 504]  # HTTP status codes to retry on
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
+session = requests.Session()
+session.mount("http://", adapter)
+session.mount("https://", adapter)
 
 # Species to dataset mapping
 species_to_dataset = {
@@ -65,11 +80,26 @@ def download_species_annotations(species_name):
         data_dir = os.path.join("data", capitalized_dir)
         os.makedirs(data_dir, exist_ok=True)
         
-        server = BiomartServer(server_url)
-        dataset = server.datasets.get(dataset_name)
-        if not dataset:
-            print(f"⚠️ Dataset for {species_name} not found on {server_url}")
-            sys.exit(1)
+        # Initialize server with custom session
+        server = BiomartServer(server_url, session=session)
+        
+        # Add retry logic for dataset retrieval
+        max_retries = 3
+        retry_delay = 5  # seconds
+        
+        for attempt in range(max_retries):
+            try:
+                dataset = server.datasets.get(dataset_name)
+                if not dataset:
+                    raise ValueError(f"Dataset for {species_name} not found on {server_url}")
+                break
+            except Exception as e:
+                if attempt == max_retries - 1:
+                    raise
+                print(f"⚠️ Attempt {attempt + 1} failed: {str(e)}")
+                print(f"🔄 Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
 
         # Try full attribute list
         response = dataset.search({'attributes': base_attributes})
