@@ -1,6 +1,6 @@
 {
   "name": "@platforma-open/milaboratories.gene-annotations-assets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gene annotations for various species",
   "scripts": {
     "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./dist/",
@@ -63,4 +63,4 @@
   "devDependencies": {
     "@platforma-sdk/package-builder": "catalog:"
   }
-} 
+}

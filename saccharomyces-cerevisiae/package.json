@@ -1,6 +1,6 @@
 {
   "name": "@platforma-open/milaboratories.gene-annotations.saccharomyces-cerevisiae",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gene annotations for Saccharomyces Cerevisiae",
   "scripts": {
     "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
@@ -25,4 +25,4 @@
   "devDependencies": {
     "@platforma-sdk/package-builder": "catalog:"
   }
-} 
+}
