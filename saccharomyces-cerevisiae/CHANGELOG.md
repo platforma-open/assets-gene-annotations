@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.gene-annotations.saccharomyces-cerevisiae
 
+## 1.1.0
+
+### Minor Changes
+
+- 05fe150: chore: bump version
+
 ## 1.0.1
 
 ### Patch Changes

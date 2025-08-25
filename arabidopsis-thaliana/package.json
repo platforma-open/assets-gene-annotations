@@ -1,6 +1,6 @@
 {
   "name": "@platforma-open/milaboratories.gene-annotations.arabidopsis-thaliana",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Gene annotations for Arabidopsis Thaliana",
   "scripts": {
     "cleanup": "rm -rf ./pkg-*.tgz && rm -rf ./build/ && rm -rf ./dist/",
