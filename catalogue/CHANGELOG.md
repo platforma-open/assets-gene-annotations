@@ -1,5 +1,11 @@
 # @platforma-open/milaboratories.gene-annotations-assets
 
+## 1.0.2
+
+### Patch Changes
+
+- 49efe39: chore; bump version
+
 ## 1.0.1
 
 ### Patch Changes
