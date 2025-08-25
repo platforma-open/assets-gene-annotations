@@ -13,6 +13,6 @@ packages:
   - catalogue
 
 catalog:
-  'turbo': ^2.4.4
+  'turbo': ^2.5.6
   '@changesets/cli': ^2.28.1
-  '@platforma-sdk/package-builder': ^2.15.6
+  '@platforma-sdk/package-builder': ^3.0.1
