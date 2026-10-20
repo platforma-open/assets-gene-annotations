@@ -1,16 +1,16 @@
 ---
-"@platforma-open/milaboratories.gene-annotations-assets": minor
-"@platforma-open/milaboratories.gene-annotations.arabidopsis-thaliana": minor
-"@platforma-open/milaboratories.gene-annotations.bos-taurus": minor
-"@platforma-open/milaboratories.gene-annotations.caenorhabditis-elegans": minor
-"@platforma-open/milaboratories.gene-annotations.danio-rerio": minor
-"@platforma-open/milaboratories.gene-annotations.drosophila-melanogaster": minor
-"@platforma-open/milaboratories.gene-annotations.gallus-gallus": minor
-"@platforma-open/milaboratories.gene-annotations.homo-sapiens": minor
-"@platforma-open/milaboratories.gene-annotations.mus-musculus": minor
-"@platforma-open/milaboratories.gene-annotations.rattus-norvegicus": minor
-"@platforma-open/milaboratories.gene-annotations.saccharomyces-cerevisiae": minor
-"@platforma-open/milaboratories.gene-annotations.sus-scrofa": minor
+"@platforma-open/milaboratories.gene-annotations-assets": patch
+"@platforma-open/milaboratories.gene-annotations.arabidopsis-thaliana": patch
+"@platforma-open/milaboratories.gene-annotations.bos-taurus": patch
+"@platforma-open/milaboratories.gene-annotations.caenorhabditis-elegans": patch
+"@platforma-open/milaboratories.gene-annotations.danio-rerio": patch
+"@platforma-open/milaboratories.gene-annotations.drosophila-melanogaster": patch
+"@platforma-open/milaboratories.gene-annotations.gallus-gallus": patch
+"@platforma-open/milaboratories.gene-annotations.homo-sapiens": patch
+"@platforma-open/milaboratories.gene-annotations.mus-musculus": patch
+"@platforma-open/milaboratories.gene-annotations.rattus-norvegicus": patch
+"@platforma-open/milaboratories.gene-annotations.saccharomyces-cerevisiae": patch
+"@platforma-open/milaboratories.gene-annotations.sus-scrofa": patch
 ---
 
 Release every package through npm trusted publishing (OIDC) so each package's trusted publisher is used before it expires.
